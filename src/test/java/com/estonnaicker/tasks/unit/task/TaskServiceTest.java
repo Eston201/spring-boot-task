@@ -92,7 +92,7 @@ public class TaskServiceTest {
     }
 
     @Test
-    public void Can_CreateTask() {
+    public void testCreateTask() {
         when(taskMapper.toEntity(taskCreateDto)).thenReturn(task);
         when(taskMapper.toDto(task)).thenReturn(taskDto);
         when(taskRepository.save(task)).thenReturn(task);
@@ -112,9 +112,9 @@ public class TaskServiceTest {
     }
 
     @Test
-    public void getTaskById_Returns_Correctly() {
+    public void testGetTaskByIdReturnsCorrectly() {
         Long id = 1L;
-        when(taskRepository.findByIdAndIsArchivedFalse(id)).thenReturn(Optional.of(task));
+        when(taskRepository.findByIdAndArchivedFalse(id)).thenReturn(Optional.of(task));
         when(taskMapper.toDto(task)).thenReturn(taskDto);
 
         TaskDto returnedDto = taskService.getTaskById(id);
@@ -123,22 +123,22 @@ public class TaskServiceTest {
         assertEquals(returnedDto.getStatus(), task.getStatus().toString());
         assertEquals(returnedDto.getDescription(), task.getDescription());
 
-        verify(taskRepository, times(1)).findByIdAndIsArchivedFalse(id);
+        verify(taskRepository, times(1)).findByIdAndArchivedFalse(id);
         verify(taskMapper, times(1)).toDto(task);
     }
 
     @Test
-    public void getTaskById_Throws_Error_When_Not_Found() {
+    public void testGetTaskByIdThrowsErrorWhenNotFound() {
         Long id = 1L;
-        when(taskRepository.findByIdAndIsArchivedFalse(id)).thenReturn(Optional.empty());
+        when(taskRepository.findByIdAndArchivedFalse(id)).thenReturn(Optional.empty());
 
         assertThrows(ResourceNotFoundException.class, () -> taskService.getTaskById(id));
-        verify(taskRepository, times(1)).findByIdAndIsArchivedFalse(1L);
+        verify(taskRepository, times(1)).findByIdAndArchivedFalse(1L);
         verify(taskMapper, never()).toDto(any());
     }
 
     @Test
-    public void getAllTasks_Returns_Correctly() {
+    public void testGetAllTasksReturnsCorrectly() {
         Pageable pageable = PageRequest.of(0, 10, Sort.by("id").ascending());
         Page<Task> taskPage = new PageImpl<>(List.of(task));
 
@@ -157,7 +157,7 @@ public class TaskServiceTest {
     }
 
     @Test
-    public void getAllTasks_Can_Validate_SortValue() {
+    public void testGetAllTasksCanValidateSortValue() {
         Pageable pageable = PageRequest.of(0, 10, Sort.by("invalidSortColumn").ascending());
         IllegalArgumentException exception = assertThrows(
             IllegalArgumentException.class, 
@@ -170,9 +170,9 @@ public class TaskServiceTest {
     }
     
     @Test
-    public void updateTask_Returns_Correctly() {
+    public void testUpdateTaskReturnsCorrectly() {
         Long id = 1L;
-        when(taskRepository.findByIdAndIsArchivedFalse(id)).thenReturn(Optional.of(task));
+        when(taskRepository.findByIdAndArchivedFalse(id)).thenReturn(Optional.of(task));
         when(taskMapper.toDto(task)).thenReturn(taskDto);
         when(taskMapper.toEntity(taskDto)).thenReturn(task);
         when(this.taskRepository.save(task)).thenReturn(task);
@@ -183,16 +183,16 @@ public class TaskServiceTest {
         assertEquals(returnedDto.getStatus(), taskUpdateDto.getStatus().toString());
         assertEquals(returnedDto.getDescription(), taskUpdateDto.getDescription());
 
-        verify(taskRepository, times(1)).findByIdAndIsArchivedFalse(id);
+        verify(taskRepository, times(1)).findByIdAndArchivedFalse(id);
         verify(taskRepository, times(1)).save(task);
         verify(taskMapper, times(2)).toDto(task); // 2 -> 1 from getTaskById and the return
         verify(taskMapper, times(1)).toEntity(taskDto);
     }
 
     @Test
-    public void updateTask_Errors_When_Task_Not_Found() {
+    public void testUpdateTaskErrorsWhenTaskNotFound() {
         Long id = 111L;
-        when(taskRepository.findByIdAndIsArchivedFalse(id)).thenReturn(Optional.empty());
+        when(taskRepository.findByIdAndArchivedFalse(id)).thenReturn(Optional.empty());
 
         ResourceNotFoundException exception = assertThrows(
             ResourceNotFoundException.class, 
@@ -200,14 +200,14 @@ public class TaskServiceTest {
         );
         assertEquals("Task not found with id : " + id, exception.getMessage());
 
-        verify(taskRepository, times(1)).findByIdAndIsArchivedFalse(id);
+        verify(taskRepository, times(1)).findByIdAndArchivedFalse(id);
         verify(taskMapper, never()).toDto(any());
     }
 
     @Test
-    public void deleteTask_Errors_When_Task_Not_Found() {
+    public void testDeleteTaskErrorsWhenTaskNotFound() {
         Long id = 111L;
-        when(taskRepository.findByIdAndIsArchivedFalse(id)).thenReturn(Optional.empty());
+        when(taskRepository.findByIdAndArchivedFalse(id)).thenReturn(Optional.empty());
 
         ResourceNotFoundException exception = assertThrows(
             ResourceNotFoundException.class, 
@@ -215,7 +215,7 @@ public class TaskServiceTest {
         );
         assertEquals("Task not found with id : " + id, exception.getMessage());
 
-        verify(taskRepository, times(1)).findByIdAndIsArchivedFalse(id);
+        verify(taskRepository, times(1)).findByIdAndArchivedFalse(id);
         verify(taskMapper, never()).toDto(any());
     }
 }

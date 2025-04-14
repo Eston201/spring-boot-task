@@ -41,7 +41,7 @@ public class SimpleTaskService implements TaskService {
 
     @Override
     public TaskDto getTaskById(Long taskId) {
-        Optional<Task> task = this.taskRepository.findByIdAndIsArchivedFalse(taskId);
+        Optional<Task> task = this.taskRepository.findByIdAndArchivedFalse(taskId);
 
         if (!task.isPresent()) {
             throw new ResourceNotFoundException("Task", "id", taskId);

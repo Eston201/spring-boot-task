@@ -26,7 +26,7 @@ public class Task {
     private Long id;
 
     @Column(nullable = false)
-    private boolean isArchived = false;
+    private boolean archived = false;
 
     @Column(nullable = false)
     private String title;
@@ -38,11 +38,4 @@ public class Task {
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private TaskStatus status;
-
-    public Task(String title, String description, LocalDate dueDate, TaskStatus status) {
-        this.title = title;
-        this.description = description;
-        this.dueDate = dueDate;
-        this.status = status;
-    }
 }

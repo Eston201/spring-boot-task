@@ -25,7 +25,6 @@ public interface TaskMapper {
     @Mapping(source = "status", target = "status", qualifiedByName = "stringToStatus")
     Task toEntity(TaskDto taskDto);
     @Mapping(source = "status", target = "status", qualifiedByName = "stringToStatus")
-    @Mapping(target = "id", ignore = true)
     Task toEntity(TaskCreateDto taskCreateDto);
 
     TaskDto toDto(Task task);

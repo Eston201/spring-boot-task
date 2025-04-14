@@ -16,6 +16,6 @@ public class TaskSpecification {
 
     public static Specification<Task> isNotArchived() {
         return (root, query, builder) -> 
-            builder.isFalse(root.get("isArchived"));
+            builder.isFalse(root.get("archived"));
     }
 }
