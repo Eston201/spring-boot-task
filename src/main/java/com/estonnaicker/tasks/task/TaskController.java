@@ -1,6 +1,7 @@
 package com.estonnaicker.tasks.task;
 
 import java.time.LocalDate;
+import java.util.Arrays;
 import java.util.List;
 
 import javax.validation.Valid;
@@ -21,6 +22,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
 import com.estonnaicker.tasks.exception.ErrorResponse;
 import com.estonnaicker.tasks.exception.InvalidTaskFieldException;
@@ -59,9 +61,13 @@ public class TaskController {
     }
 
     @PostMapping
-    public ApiResponse<TaskDto> createTask(@Valid @RequestBody TaskCreateDto taskdDto) {
+    public ResponseEntity<ApiResponse<TaskDto>> createTask(@Valid @RequestBody TaskCreateDto taskdDto) {
         TaskDto createdTaskDto = taskService.createTask(taskdDto);
-        return new ApiResponse<TaskDto>(createdTaskDto);
+
+        return new ResponseEntity<ApiResponse<TaskDto>>(
+            new ApiResponse<TaskDto>(createdTaskDto), 
+            HttpStatus.CREATED
+        );
     }
 
     @PatchMapping("{id}")
@@ -84,6 +90,31 @@ public class TaskController {
         errorResponse.setTimeStamp(System.currentTimeMillis());  
         errorResponse.addError(ex.getField(), ex.getMessage());
 
+        return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler({ MethodArgumentTypeMismatchException.class })
+    public ResponseEntity<ErrorResponse> handleMethodArgumentTypeMismatch(MethodArgumentTypeMismatchException ex) {
+        ErrorResponse errorResponse = new ErrorResponse();
+        errorResponse.setStatus(HttpStatus.BAD_REQUEST.value());
+        errorResponse.setMessage("Invalid Input Type");
+        errorResponse.setTimeStamp(System.currentTimeMillis());
+
+        if (ex.getRequiredType() == TaskStatus.class) {
+            errorResponse.addError("status", "Expected values " + Arrays.toString(TaskStatus.values()));
+        }
+        
+        else if (ex.getRequiredType() == LocalDate.class) {
+            errorResponse.addError("dueDate", "Invalid date format supplied, expected yyyy-MM-dd HH:mm:ss");
+        }
+
+        else if(ex.getRequiredType() == Long.class) {
+            errorResponse.addError(ex.getName(), "Expected a number");
+        }
+
+        else {
+            errorResponse.addError(ex.getName(), "Expected type " + ex.getRequiredType().getSimpleName());
+        }
         return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
     }
 }
