@@ -82,6 +82,28 @@ A Spring Boot 2 application for managing tasks with CRUD operations, pagination,
     - sort: Optional, field and direction (e.g., sort=id,asc). Allowed fields: id, title, dueDate, status
 - Example query string
     -  http://localhost:8080/api/v1/tasks?status=IN_PROGRESS&dueDate=2025-04-14&page=0&size=5&sort=id,asc
+- Example response: "data" contains list of tasks and "metadata" contains pagaination information
+```javascript
+{
+    "status": "success",
+    "data": [
+        {
+        "id": 1,
+        "title": "Complete video game",
+        "description": "Play the game",
+        "dueDate": "2026-01-01",
+        "status": "PENDING"
+        }
+    ],
+    "metadata": {
+        "pageNumber": 0,
+        "pageSize": 10,
+        "totalElements": 50,
+        "totalPages": 5,
+        "last": false
+    }
+}
+```
 
 ### POST /api/tasks
 - Description: Creates a task with title, description, due date, and status.
@@ -105,6 +127,13 @@ A Spring Boot 2 application for managing tasks with CRUD operations, pagination,
 - Description: Soft-deletes a task by marking it as archived.
 - Path Parameter:
     - id: Task ID (e.g 1).
+- Example Response: "data" is the ID of the task that was soft deleted
+```javascript
+{
+    "status": "success",
+    "data": 1
+}
+```
 
 ## Swagger UI
 Interactive API documentation is available at: http://localhost:8080/swagger-ui
