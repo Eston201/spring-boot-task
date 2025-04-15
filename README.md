@@ -92,7 +92,7 @@ A Spring Boot 2 application for managing tasks with CRUD operations, pagination,
         "title": "Complete video game",
         "description": "Play the game",
         "dueDate": "2026-01-01",
-        "status": "PENDING"
+        "status": "TODO"
         }
     ],
     "metadata": {
