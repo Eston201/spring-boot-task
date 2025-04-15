@@ -29,7 +29,7 @@ A Spring Boot 2 application for managing tasks with CRUD operations, pagination,
 - **Postgresql** Data storage
 - **H2 Database**: In-memory database (used in integration test)
 - **Springfox Swagger**: API documentation
-- **MapStruct**: 1.5.5 for DTO-entity mapping
+- **MapStruct**: DTO-entity mapping
 - **Lombok**: To reduce boilerplate code
 - **Maven**: Build tool
 
